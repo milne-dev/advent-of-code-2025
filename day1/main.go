@@ -46,13 +46,10 @@ func ChangePos(p, n int) int {
 		return (p + n) % 100
 	}
 
-	if p+n >= 0 {
-		return p + n
+	n = (-n) % 100
+	x := p - n
+	if x >= 0 {
+		return x
 	}
-
-	x := (p - n) % 100
-	if x == 0 {
-		return 0
-	}
-	return 100 - x
+	return 100 + x
 }
