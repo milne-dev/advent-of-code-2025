@@ -15,7 +15,7 @@ func main() {
 
 	fields := strings.Split(s, ",")
 
-	fmt.Println(PartOne(fields))
+	fmt.Println(PartTwo(fields))
 }
 
 func PartOne(fields []string) int {
@@ -70,8 +70,23 @@ func PartTwo(fields []string) int {
 
 func IsInvalidP2(idInt int) bool {
 	id := strconv.Itoa(idInt)
-	if len(id)&1 == 1 {
+	for j := 1; j <= len(id)/2; j++ {
+		if isRepeatingForEntirety(id, id[0:j], j) {
+			return true
+		}
+	}
+	return false
+}
+
+func isRepeatingForEntirety(id, sub string, inc int) bool {
+	if len(id)%inc != 0 {
 		return false
 	}
-	return id[0:len(id)/2] == id[len(id)/2:]
+	for i := inc; i+inc <= len(id); i += inc {
+		if sub != id[i:i+inc] {
+			return false
+		}
+	}
+
+	return true
 }
