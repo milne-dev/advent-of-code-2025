@@ -22,28 +22,27 @@ func PartOne(fields []string) int {
 	var ans int
 	for _, field := range fields {
 		parts := strings.Split(field, "-")
-		if IsInvalid(parts[0]) {
-			n, err := strconv.Atoi(parts[0])
-			if err != nil {
-				panic(err)
-			}
-			ans += n
+		start, err := strconv.Atoi(parts[0])
+		if err != nil {
+			panic(err)
 		}
-		if IsInvalid(parts[1]) {
-			n, err := strconv.Atoi(parts[1])
-			if err != nil {
-				panic(err)
+		end, err := strconv.Atoi(parts[1])
+		if err != nil {
+			panic(err)
+		}
+		for ; start <= end; start++ {
+			if IsInvalid(start) {
+				ans += start
 			}
-			ans += n
 		}
 	}
 	return ans
 }
 
-func IsInvalid(id string) bool {
+func IsInvalid(idInt int) bool {
+	id := strconv.Itoa(idInt)
 	if len(id)&1 == 1 {
 		return false
 	}
-
-	return true
+	return id[0:len(id)/2] == id[len(id)/2:]
 }

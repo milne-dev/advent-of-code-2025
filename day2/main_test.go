@@ -25,12 +25,26 @@ func TestPartOne(t *testing.T) {
 
 func TestIsInvalid(t *testing.T) {
 	d := []struct {
-		id  string
+		id  int
 		res bool
 	}{
-		{"22", true},
-		{"21", false},
-		{"101", false},
+		{22, true},
+		{21, false},
+		{101, false},
+		{101010, false},
+		{101101, true},
+		{55555, false},
+		{555555, true},
+		{5555555, false},
+		{55655, false},
+		{555655, false},
+		{5556555, false},
+		{6555555, false},
+		{7, false},
+		{721, false},
+		{727, false},
+		{7227, false},
+		{7272, true},
 	}
 
 	for _, c := range d {
