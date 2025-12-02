@@ -28,8 +28,10 @@ func Solve(input []string) int {
 		}
 
 		if l[0] == 'L' {
+			ans += TimesPastZero(pos, -n)
 			pos = ChangePos(pos, -n)
 		} else {
+			ans += TimesPastZero(pos, n)
 			pos = ChangePos(pos, n)
 		}
 
@@ -52,4 +54,32 @@ func ChangePos(p, n int) int {
 		return x
 	}
 	return 100 + x
+}
+
+// couldn't find a clever way to not simulate this
+func TimesPastZero(p, n int) int {
+	var ans int
+	if n > 0 {
+		for ; n > 1; n-- {
+			p++
+			if p%100 == 0 {
+				ans++
+			}
+		}
+	} else {
+		for ; n < -1; n++ {
+			p--
+			if p%100 == 0 {
+				ans++
+			}
+		}
+	}
+	return ans
+}
+
+func abs(n int) int {
+	if n >= 0 {
+		return n
+	}
+	return -n
 }

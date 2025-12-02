@@ -15,7 +15,7 @@ func TestSolve(t *testing.T) {
 		"R14",
 		"L82",
 	}
-	want := 3
+	want := 6
 	got := Solve(d)
 	if want != got {
 		t.Errorf(`Solve() want %v, got %v`, want, got)
@@ -66,6 +66,54 @@ func TestChangePos(t *testing.T) {
 		got := ChangePos(c[0], c[1])
 		if want != got {
 			t.Errorf(`ChangePos(%v, %v) want %v, got %v`, c[0], c[1],
+				want, got)
+		}
+	}
+}
+
+func TestTimesPastZero(t *testing.T) {
+	cases := [][]int{
+		{0, -1, 0},
+		{1, -1, 0},
+		{1, -2, 1},
+		{0, 1, 0},
+		{0, -100, 0},
+		{0, -101, 1},
+		{0, -200, 1},
+		{0, -201, 2},
+		{0, 100, 0},
+		{0, 101, 1},
+		{0, 200, 1},
+		{0, 201, 2},
+		{25, -26, 1},
+		{25, -25, 0},
+		{99, 200, 2},
+		{0, 150, 1},
+		{0, 250, 2},
+		{0, 1000, 9},
+		{0, -150, 1},
+		{0, -250, 2},
+		{0, -1000, 9},
+		{50, -68, 1},
+		{95, 60, 1},
+		{14, -82, 1},
+		{97, 750, 8},
+		{50, -452, 5},
+		{50, 550, 5},
+		{25, -100, 1},
+		{23, -123, 1},
+		{23, -124, 2},
+		{99, 1, 0},
+		{99, 2, 1},
+		{99, 100, 1},
+		{99, 101, 1},
+		{99, 102, 2},
+	}
+	for _, c := range cases {
+		want := c[2]
+		got := TimesPastZero(c[0], c[1])
+		if want != got {
+			t.Errorf(`TimesPastZero(%v, %v) want %v, got %v`, c[0], c[1],
 				want, got)
 		}
 	}
