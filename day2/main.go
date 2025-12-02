@@ -46,3 +46,32 @@ func IsInvalid(idInt int) bool {
 	}
 	return id[0:len(id)/2] == id[len(id)/2:]
 }
+
+func PartTwo(fields []string) int {
+	var ans int
+	for _, field := range fields {
+		parts := strings.Split(field, "-")
+		start, err := strconv.Atoi(parts[0])
+		if err != nil {
+			panic(err)
+		}
+		end, err := strconv.Atoi(parts[1])
+		if err != nil {
+			panic(err)
+		}
+		for ; start <= end; start++ {
+			if IsInvalidP2(start) {
+				ans += start
+			}
+		}
+	}
+	return ans
+}
+
+func IsInvalidP2(idInt int) bool {
+	id := strconv.Itoa(idInt)
+	if len(id)&1 == 1 {
+		return false
+	}
+	return id[0:len(id)/2] == id[len(id)/2:]
+}
