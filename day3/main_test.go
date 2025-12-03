@@ -15,9 +15,9 @@ func TestPartOne(t *testing.T) {
 func TestPartTwo(t *testing.T) {
 	input := []string{"987654321111111", "811111111111119", "234234234234278", "818181911112111"}
 	want := 3121910778619
-	got := PartOne(input)
+	got := PartTwo(input)
 	if want != got {
-		t.Errorf(`PartOne(...) want %v, got %v`,
+		t.Errorf(`PartTwo(...) want %v, got %v`,
 			want, got)
 	}
 }

@@ -26,6 +26,40 @@ func PartTwo(banks []string) int {
 }
 
 func MaxNumTwelve(bank string) int {
+	lookup := [10][]int{}
+	for i, d := range bank {
+		lookup[d-'0'] = append(lookup[d-'0'], i)
+	}
+
+	for i := 9; i >= 0; i-- {
+		for _, j := range lookup[i] {
+			res := search(j, 1, i, lookup)
+			if res != 0 {
+				return res
+			}
+		}
+	}
+
+	return 0
+}
+
+func search(k, size, cur int, lookup [10][]int) int {
+	if size == 12 {
+		return cur
+	}
+
+	for i := 9; i >= 0; i-- {
+		for _, j := range lookup[i] {
+			if k >= j {
+				continue
+			}
+			res := search(j, size+1, cur*10+i, lookup)
+			if res != 0 {
+				return res
+			}
+		}
+	}
+
 	return 0
 }
 
