@@ -14,7 +14,19 @@ func main() {
 
 	banks := strings.Fields(s)
 
-	fmt.Println(PartOne(banks))
+	fmt.Println(PartTwo(banks))
+}
+
+func PartTwo(banks []string) int {
+	var ans int
+	for _, bank := range banks {
+		ans += MaxNumTwelve(bank)
+	}
+	return ans
+}
+
+func MaxNumTwelve(bank string) int {
+	return 0
 }
 
 func PartOne(banks []string) int {
