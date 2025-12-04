@@ -13,7 +13,19 @@ func main() {
 	}
 
 	grid := strings.Fields(s)
-	fmt.Println(PartOne(grid))
+	fmt.Println(PartTwo(grid))
+}
+
+func PartTwo(grid []string) int {
+	var total int
+	for x := range grid {
+		for y := range grid[x] {
+			if grid[x][y] == '@' && canAccess(grid, x, y) {
+				total++
+			}
+		}
+	}
+	return total
 }
 
 func PartOne(grid []string) int {
