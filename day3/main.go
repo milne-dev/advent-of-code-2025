@@ -11,12 +11,7 @@ func main() {
 }
 
 func Setup() []string {
-	s, err := utils.ReadFileText("input.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	return strings.Fields(s)
+	return strings.Fields(utils.ReadInput())
 }
 
 func PartTwoStack(banks []string) int {

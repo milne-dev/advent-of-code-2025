@@ -8,13 +8,7 @@ import (
 )
 
 func main() {
-	s, err := utils.ReadFileText("input.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	fields := strings.Split(s, ",")
-
+	fields := strings.Split(utils.ReadInput(), ",")
 	fmt.Println(PartTwo(fields))
 }
 

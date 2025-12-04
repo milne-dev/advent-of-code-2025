@@ -2,7 +2,10 @@ package utils
 
 import "os"
 
-func ReadFileText(path string) (string, error) {
-	b, err := os.ReadFile(path)
-	return string(b), err
+func ReadInput() string {
+	b, err := os.ReadFile("input.txt")
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
 }

@@ -7,12 +7,7 @@ import (
 )
 
 func main() {
-	s, err := utils.ReadFileText("input.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	lines := strings.Fields(s)
+	lines := strings.Fields(utils.ReadInput())
 	fmt.Println(Solve(lines))
 }
 

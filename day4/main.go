@@ -9,12 +9,7 @@ import (
 var dirs = [][]int{{1, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 
 func main() {
-	s, err := utils.ReadFileText("input.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	grid := strings.Fields(s)
+	grid := strings.Fields(utils.ReadInput())
 	gridBytes := make([][]byte, len(grid))
 	for i := range grid {
 		gridBytes[i] = []byte(grid[i])
