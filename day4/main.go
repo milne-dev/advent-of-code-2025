@@ -3,6 +3,7 @@ package main
 import (
 	"aoc2025/utils"
 	"fmt"
+	"strings"
 )
 
 func main() {
@@ -11,9 +12,10 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(PartOne(s))
+	grid := strings.Fields(s)
+	fmt.Println(PartOne(grid))
 }
 
-func PartOne(input string) int {
+func PartOne(grid []string) int {
 	return 0
 }
