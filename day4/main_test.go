@@ -36,8 +36,12 @@ func TestPartTwo(t *testing.T) {
 		".@@@@@@@@.",
 		"@.@.@@@.@.",
 	}
+	inputBytes := make([][]byte, len(input))
+	for i := range input {
+		inputBytes[i] = []byte(input[i])
+	}
 	want := 43
-	got := PartTwo(input)
+	got := PartTwo(inputBytes)
 	if want != got {
 		t.Errorf(`PartTwo(...) want %v, got %v`,
 			want, got)
