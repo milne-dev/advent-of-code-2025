@@ -7,14 +7,49 @@ import (
 )
 
 func main() {
+	fmt.Println(PartTwoStack(Setup()))
+}
+
+func Setup() []string {
 	s, err := utils.ReadFileText("input.txt")
 	if err != nil {
 		panic(err)
 	}
 
-	banks := strings.Fields(s)
+	return strings.Fields(s)
+}
 
-	fmt.Println(PartTwo(banks))
+func PartTwoStack(banks []string) int {
+	var ans int
+	for _, bank := range banks {
+		ans += MaxNumTwelveStack(bank)
+	}
+	return ans
+}
+
+func MaxNumTwelveStack(bank string) int {
+	stack := make([]int, 1, 12)
+	stack[0] = int(bank[0] - '0')
+
+	for i := 1; i < len(bank); i++ {
+		d := int(bank[i] - '0')
+		shouldAppend := len(stack) < 12
+
+		for len(stack) > 0 && d > stack[len(stack)-1] && len(stack)+len(bank)-i > 12 {
+			shouldAppend = true
+			stack = stack[:len(stack)-1]
+		}
+
+		if shouldAppend {
+			stack = append(stack, d)
+		}
+	}
+
+	var ans int
+	for _, n := range stack {
+		ans = ans*10 + n
+	}
+	return ans
 }
 
 func PartTwo(banks []string) int {
