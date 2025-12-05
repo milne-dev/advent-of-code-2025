@@ -22,3 +22,18 @@ func TestPartOne(t *testing.T) {
 			want, got)
 	}
 }
+
+func TestPartTwo(t *testing.T) {
+	input := []string{
+		"3-5",
+		"10-14",
+		"16-20",
+		"12-18",
+	}
+	want := 14
+	got := PartTwo(input)
+	if want != got {
+		t.Errorf(`PartTwo(...) want %v, got %v`,
+			want, got)
+	}
+}
