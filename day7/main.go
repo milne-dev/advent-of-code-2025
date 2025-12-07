@@ -53,6 +53,6 @@ func PartOne(lines [][]byte) int {
 	return ans
 }
 
-func PartTwo(lines []string) int {
+func PartTwo(lines [][]byte) int {
 	return 0
 }
