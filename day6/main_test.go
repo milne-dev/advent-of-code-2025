@@ -1,11 +1,18 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestPartOne(t *testing.T) {
-	input := []string{}
-	want := 3
-	got := PartOne(input)
+	input := `123 328  51 64
+ 45 64  387 23
+  6 98  215 314
+*   +   *   +  `
+	fields := strings.Fields(input)
+	want := 4277556
+	got := PartOne(fields)
 	if want != got {
 		t.Errorf(`PartOne(...) want %v, got %v`,
 			want, got)
