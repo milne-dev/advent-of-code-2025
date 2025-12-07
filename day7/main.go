@@ -59,50 +59,27 @@ type rec struct {
 }
 
 func PartTwo(lines [][]byte) int {
-	paths := make(map[string]bool)
-	var q []rec
-
 	for i, line := range lines {
 		for j, c := range line {
 			if c == 'S' {
-				q = []rec{
-					{i: i + 1, j: j, path: coordsToS(i, j)},
-				}
-				break
+				return 1 + search(lines, i+1, j)
 			}
 		}
 	}
 
-	for len(q) > 0 {
-		var nq []rec
+	return 0
+}
 
-		for _, r := range q {
-			i, j := r.i, r.j
-
-			if i == len(lines) {
-				paths[r.path] = true
-				continue
-			}
-
-			if j == len(lines[0]) {
-				continue
-			}
-
-			switch lines[i][j] {
-			case '|':
-				continue
-			case '^':
-				nq = append(nq, rec{i: i, j: j - 1, path: r.path + coordsToS(i, j)})
-				nq = append(nq, rec{i: i, j: j + 1, path: r.path + coordsToS(i, j)})
-			case '.':
-				nq = append(nq, rec{i: i + 1, j: j, path: r.path + coordsToS(i, j)})
-			}
-		}
-
-		q = nq
+func search(lines [][]byte, i, j int) int {
+	if i == len(lines) || j == len(lines[0]) {
+		return 0
 	}
 
-	return len(paths)
+	if lines[i][j] == '^' {
+		return 1 + search(lines, i, j-1) + search(lines, i, j+1)
+	}
+
+	return search(lines, i+1, j)
 }
 
 func coordsToS(x, y int) string {
