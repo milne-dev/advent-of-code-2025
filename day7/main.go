@@ -8,7 +8,7 @@ import (
 
 func main() {
 	input := utils.ReadInput()
-	fmt.Println(PartTwo(strings.Split(input, "\n")))
+	fmt.Println(PartOne(strings.Split(input, "\n")))
 }
 
 func PartOne(lines []string) int {
