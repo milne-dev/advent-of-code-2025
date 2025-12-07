@@ -59,38 +59,44 @@ type rec struct {
 }
 
 func PartTwo(lines [][]byte) int {
-	memo := make(map[[2]int]int)
+	dp := make([][]int, len(lines)+1)
+	for i := range dp {
+		dp[i] = make([]int, len(lines[0])+1)
+	}
+
+	for i := len(lines) - 1; i >= 0; i-- {
+		for j := range lines[0] {
+			if lines[i][j] != '^' {
+				dp[i][j] = dp[i+1][j]
+			}
+		}
+
+		for j := range lines[0] {
+			if lines[i][j] != '^' {
+				continue
+			}
+
+			var left, right int
+
+			if j > 0 {
+				left = dp[i][j-1]
+			}
+
+			if j < len(lines[0])-1 {
+				right = dp[i][j+1]
+			}
+
+			dp[i][j] = 1 + left + right
+		}
+	}
+
 	for i, line := range lines {
 		for j, c := range line {
 			if c == 'S' {
-				return 1 + search(lines, i+1, j, memo)
+				return 1 + dp[i][j]
 			}
 		}
 	}
 
 	return 0
-}
-
-func search(lines [][]byte, i, j int, memo map[[2]int]int) (res int) {
-	if i == len(lines) || j == len(lines[0]) {
-		return 0
-	}
-
-	if v, ok := memo[[2]int{i, j}]; ok {
-		return v
-	}
-
-	if lines[i][j] == '^' {
-		res = 1 + search(lines, i, j-1, memo) + search(lines, i, j+1, memo)
-	} else {
-		res = search(lines, i+1, j, memo)
-	}
-
-	memo[[2]int{i, j}] = res
-
-	return
-}
-
-func coordsToS(x, y int) string {
-	return fmt.Sprintf("%v,%v,", x, y)
 }
