@@ -1,7 +1,7 @@
 package main
 
 import (
-	"strings"
+	"bytes"
 	"testing"
 )
 
@@ -23,7 +23,7 @@ func TestPartOne(t *testing.T) {
 .^.^.^.^.^...^.
 ...............`
 	want := 21
-	got := PartOne(strings.Split(input, "\n"))
+	got := PartOne(bytes.Split([]byte(input), []byte("\n")))
 	if want != got {
 		t.Errorf(`PartOne(...) want %v, got %v`,
 			want, got)
