@@ -59,7 +59,7 @@ func PartOne(lines iter.Seq[string]) int {
 	return ans
 }
 
-func PartTwo(fields []string) int {
+func PartTwo(lines iter.Seq[string]) int {
 	var ans int
 	return ans
 }

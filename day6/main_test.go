@@ -32,9 +32,13 @@ func TestPartOne(t *testing.T) {
 }
 
 func TestPartTwo(t *testing.T) {
-	input := []string{}
-	want := 14
-	got := PartTwo(input)
+	input := `123 328  51 64
+ 45 64  387 23
+  6 98  215 314
+*   +   *   +  `
+	lines := strings.Lines(input)
+	want := 3263827
+	got := PartTwo(lines)
 	if want != got {
 		t.Errorf(`PartTwo(...) want %v, got %v`,
 			want, got)
