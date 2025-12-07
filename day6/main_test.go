@@ -10,9 +10,21 @@ func TestPartOne(t *testing.T) {
  45 64  387 23
   6 98  215 314
 *   +   *   +  `
-	fields := strings.Fields(input)
+	lines := strings.Lines(input)
 	want := 4277556
-	got := PartOne(fields)
+	got := PartOne(lines)
+	if want != got {
+		t.Errorf(`PartOne(...) want %v, got %v`,
+			want, got)
+	}
+
+	input = `1 1 1 1 1
+		1 1 1 1 1
+		1 1 1 1 1
+		+ + + + +`
+	lines = strings.Lines(input)
+	want = 15
+	got = PartOne(lines)
 	if want != got {
 		t.Errorf(`PartOne(...) want %v, got %v`,
 			want, got)

@@ -3,50 +3,54 @@ package main
 import (
 	"aoc2025/utils"
 	"fmt"
+	"iter"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	fields := strings.Fields(utils.ReadInput())
-	fmt.Println(PartOne(fields))
+	input := utils.ReadInput()
+	fmt.Println(PartOne(strings.Lines(input)))
 }
 
-func PartOne(fields []string) int {
+func PartOne(lines iter.Seq[string]) int {
 	var ans int
 
-	nums := make([]int, 0, len(fields))
-	cmds := []byte{}
+	nums := make([][]int, 0)
+	var cmds []byte
 
-	for _, field := range fields {
-		if field[0] == '*' || field[0] == '+' {
-			cmds = append(cmds, field[0])
-			continue
+	for line := range lines {
+		lineFields := strings.Fields(line)
+
+		if lineFields[0][0] == '*' || lineFields[0][0] == '+' {
+			cmds = make([]byte, len(lineFields))
+			for i, field := range lineFields {
+				cmds[i] = field[0]
+			}
+			break
 		}
 
-		if n, err := strconv.Atoi(field); err != nil {
-			panic(err)
-		} else {
-			nums = append(nums, n)
+		numsLine := []int{}
+		for _, field := range lineFields {
+			n, err := strconv.Atoi(field)
+			if err != nil {
+				panic(err)
+			}
+			numsLine = append(numsLine, n)
 		}
-	}
-
-	rowSize := len(fields) / len(cmds)
-	numsGrid := make([][]int, 0)
-	for i := 0; i < len(nums); i += rowSize {
-		numsGrid = append(numsGrid, nums[i:i+rowSize])
+		nums = append(nums, numsLine)
 	}
 
 	for i, cmd := range cmds {
 		var x int
 		if cmd == '*' {
-			x = numsGrid[0][i]
-			for j := 1; j < len(numsGrid); j++ {
-				x *= numsGrid[j][i]
+			x = nums[0][i]
+			for j := 1; j < len(nums); j++ {
+				x *= nums[j][i]
 			}
 		} else {
-			for j := range numsGrid {
-				x += numsGrid[j][i]
+			for j := range nums {
+				x += nums[j][i]
 			}
 		}
 		ans += x
