@@ -8,7 +8,7 @@ import (
 
 func main() {
 	input := utils.ReadInput()
-	fmt.Println(PartOne(bytes.Split([]byte(input), []byte("\n"))))
+	fmt.Println(PartTwo(bytes.Split([]byte(input), []byte("\n"))))
 }
 
 func PartOne(lines [][]byte) int {
@@ -53,6 +53,58 @@ func PartOne(lines [][]byte) int {
 	return ans
 }
 
+type rec struct {
+	i, j int
+	path string
+}
+
 func PartTwo(lines [][]byte) int {
-	return 0
+	paths := make(map[string]bool)
+	var q []rec
+
+	for i, line := range lines {
+		for j, c := range line {
+			if c == 'S' {
+				q = []rec{
+					{i: i + 1, j: j, path: coordsToS(i, j)},
+				}
+				break
+			}
+		}
+	}
+
+	for len(q) > 0 {
+		var nq []rec
+
+		for _, r := range q {
+			i, j := r.i, r.j
+
+			if i == len(lines) {
+				paths[r.path] = true
+				continue
+			}
+
+			if j == len(lines[0]) {
+				continue
+			}
+
+			switch lines[i][j] {
+			case '|':
+				continue
+			case '^':
+				nq = append(nq, rec{i: i, j: j - 1, path: r.path + coordsToS(i, j)})
+				nq = append(nq, rec{i: i, j: j + 1, path: r.path + coordsToS(i, j)})
+			case '.':
+				nq = append(nq, rec{i: i + 1, j: j, path: r.path + coordsToS(i, j)})
+			}
+		}
+
+		q = nq
+	}
+
+	return len(paths)
+}
+
+func coordsToS(x, y int) string {
+	return fmt.Sprintf("%v,%v,", x, y)
 }
