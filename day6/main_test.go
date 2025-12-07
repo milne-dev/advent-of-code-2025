@@ -32,11 +32,12 @@ func TestPartOne(t *testing.T) {
 }
 
 func TestPartTwo(t *testing.T) {
-	input := `123 328  51 64
- 45 64  387 23
-  6 98  215 314
-*   +   *   +  `
-	lines := strings.Lines(input)
+	lines := []string{
+		"123 328  51 64 ",
+		" 45 64  387 23 ",
+		"  6 98  215 314",
+		"*   +   *   +  ",
+	}
 	want := 3263827
 	got := PartTwo(lines)
 	if want != got {
