@@ -12,7 +12,7 @@ import (
 func main() {
 	input := utils.ReadInput()
 	lines := utils.StringLines(input)
-	fmt.Println(PartOne(lines, 1000))
+	fmt.Println(PartTwo(lines))
 }
 
 type pos struct {
@@ -98,6 +98,6 @@ func distance(p, q pos) float64 {
 	return math.Sqrt(math.Pow(float64(p.x-q.x), 2) + math.Pow(float64(p.y-q.y), 2) + math.Pow(float64(p.z-q.z), 2))
 }
 
-func PartTwo(lines [][]byte) int {
+func PartTwo(lines []string) int {
 	return 0
 }
