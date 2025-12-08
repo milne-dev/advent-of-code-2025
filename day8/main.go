@@ -2,13 +2,11 @@ package main
 
 import (
 	"aoc2025/utils"
-	"bytes"
 	"fmt"
 )
 
 func main() {
-	input := utils.ReadInputBytes()
-	lines := bytes.Split(input, []byte("\n"))
+	lines := utils.ByteLines(utils.ReadInputBytes())
 	fmt.Println(PartOne(lines))
 }
 

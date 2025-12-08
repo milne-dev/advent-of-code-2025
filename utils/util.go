@@ -1,6 +1,9 @@
 package utils
 
-import "os"
+import (
+	"bytes"
+	"os"
+)
 
 func ReadInput() string {
 	b, err := os.ReadFile("input.txt")
@@ -16,4 +19,8 @@ func ReadInputBytes() []byte {
 		panic(err)
 	}
 	return b
+}
+
+func ByteLines(input []byte) [][]byte {
+	return bytes.Split(input, []byte("\n"))
 }
