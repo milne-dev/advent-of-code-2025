@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc2025/utils"
 	"bytes"
 	"testing"
 )
@@ -27,7 +28,7 @@ func TestPartOne(t *testing.T) {
 984,92,344
 425,690,689`
 	want := 40
-	got := PartOne(bytes.Split([]byte(input), []byte("\n")))
+	got := PartOne(utils.StringLines(input))
 	if want != got {
 		t.Errorf(`PartOne(...) want %v, got %v`,
 			want, got)

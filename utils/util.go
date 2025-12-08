@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"os"
+	"strings"
 )
 
 func ReadInput() string {
@@ -19,6 +20,10 @@ func ReadInputBytes() []byte {
 		panic(err)
 	}
 	return b
+}
+
+func StringLines(input string) []string {
+	return strings.Split(input, "\n")
 }
 
 func ByteLines(input []byte) [][]byte {
