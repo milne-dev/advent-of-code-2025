@@ -48,8 +48,7 @@ func PartOne(lines []string, n int) int {
 	slices.SortFunc(distances, func(a, b dist) int {
 		return cmp.Compare(a.v, b.v)
 	})
-
-	// map position to its current set
+	
 	var conns []map[pos]bool
 
 	for i := range n {
