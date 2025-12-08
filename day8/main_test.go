@@ -28,7 +28,7 @@ func TestPartOne(t *testing.T) {
 984,92,344
 425,690,689`
 	want := 40
-	got := PartOne(utils.StringLines(input))
+	got := PartOne(utils.StringLines(input), 10)
 	if want != got {
 		t.Errorf(`PartOne(...) want %v, got %v`,
 			want, got)
