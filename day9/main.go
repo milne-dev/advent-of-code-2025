@@ -95,19 +95,30 @@ func PartTwo(lines []string) int {
 	// lets process the grid and find for each row that contains a point
 	// mark down the location of any . that are adjacent to # or X
 	// then we can check if any of those . locations fall within our range
-	adjacentDotLocations := make([][]int, len(grid))
+	adjacentDotLocationsX := make([][]int, len(grid))
 	for i := range grid {
 		for j := range grid[i] {
 			if grid[i][j] == '.' {
 				if (j > 0 && grid[i][j-1] != '.') || (j < len(grid[i])-1 && grid[i][j+1] != '.') {
-					adjacentDotLocations[i] = append(adjacentDotLocations[i], j)
+					adjacentDotLocationsX[i] = append(adjacentDotLocationsX[i], j)
+				}
+			}
+		}
+	}
+
+	adjacentDotLocationsY := make([][]int, len(grid[0]))
+	for i := range grid {
+		for j := range grid[i] {
+			if grid[i][j] == '.' {
+				if (i > 0 && grid[i-1][j] != '.') || (i < len(grid)-1 && grid[i+1][j] != '.') {
+					adjacentDotLocationsY[j] = append(adjacentDotLocationsY[j], i)
 				}
 			}
 		}
 	}
 
 	fmt.Println("grid adjacent dot locations processed")
-	//	for _, row := range adjacentDotLocations {
+	//	for _, row := range adjacentDotLocationsX {
 	//		fmt.Println(row)
 	//	}
 
@@ -115,7 +126,7 @@ func PartTwo(lines []string) int {
 	for i, p := range points {
 		for j := i + 1; j < len(points); j++ {
 			q := points[j]
-			if isValid(p, q, grid, adjacentDotLocations) {
+			if isValid(p, q, grid, adjacentDotLocationsX, adjacentDotLocationsY) {
 				// l * w
 				w := abs(p.x-q.x) + 1
 				l := abs(p.y-q.y) + 1
@@ -176,14 +187,21 @@ func abs(n int) int {
 	return -n
 }
 
-func isValid(p, q point, grid [][]byte, adjacentDotLocations [][]int) bool {
+func isValid(p, q point, grid [][]byte, adjacentDotLocationsX, adjacentDotLocationsY [][]int) bool {
 	minX := min(p.x, q.x)
 	minY := min(p.y, q.y)
 	maxX := max(p.x, q.x)
 	maxY := max(p.y, q.y)
 	for i := minX; i <= maxX; i++ {
-		for _, dotJ := range adjacentDotLocations[i] {
+		for _, dotJ := range adjacentDotLocationsX[i] {
 			if dotJ >= minY && dotJ <= maxY {
+				return false
+			}
+		}
+	}
+	for j := minY; j <= maxY; j++ {
+		for _, dotI := range adjacentDotLocationsY[j] {
+			if dotI >= minX && dotI <= maxX {
 				return false
 			}
 		}
