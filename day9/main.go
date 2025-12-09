@@ -3,6 +3,7 @@ package main
 import (
 	"aoc2025/utils"
 	"fmt"
+	"math"
 	"slices"
 )
 
@@ -39,10 +40,7 @@ func PartOne(lines []string) int {
 }
 
 func PartTwo(lines []string) int {
-	// farthest red to left for row
-	prefix := make(map[int]int)
-	suffix := make(map[int]int)
-
+	minX := math.MaxInt
 	var maxX, maxY int
 
 	var points []point
@@ -51,20 +49,10 @@ func PartTwo(lines []string) int {
 		fmt.Sscanf(line, "%d,%d", &p.y, &p.x)
 		points = append(points, p)
 
+		minX = min(minX, p.x)
+
 		maxX = max(maxX, p.x)
 		maxY = max(maxY, p.y)
-
-		if m, ok := prefix[p.x]; ok {
-			prefix[p.x] = min(m, p.y)
-		} else {
-			prefix[p.x] = p.y
-		}
-
-		if m, ok := suffix[p.x]; ok {
-			suffix[p.x] = max(m, p.y)
-		} else {
-			suffix[p.x] = p.y
-		}
 	}
 
 	// ok were going to just make a grid and simulate this
@@ -103,11 +91,21 @@ func PartTwo(lines []string) int {
 		}
 	}
 
-	for _, row := range grid {
-		fmt.Println(string(row))
+	// ok time to capture min and max of each line in prefix/suffix
+	prefix := make([]int, maxX+1)
+	for i := range prefix {
+		prefix[i] = math.MaxInt
 	}
+	suffix := make([]int, maxX+1)
 
-	// ok time to capture min and max of each line
+	for i := minX; i <= maxX; i++ {
+		for j := range grid[i] {
+			if grid[i][j] == '#' {
+				prefix[i] = min(prefix[i], j)
+				suffix[i] = max(prefix[i], j)
+			}
+		}
+	}
 
 	var ans int
 	for i, p := range points {
@@ -125,7 +123,7 @@ func PartTwo(lines []string) int {
 	return ans
 }
 
-func isValid(p, q point, prefix, suffix map[int]int) bool {
+func isValid(p, q point, prefix, suffix []int) bool {
 	var start, fin point
 
 	if p.x == q.x {
@@ -145,10 +143,10 @@ func isValid(p, q point, prefix, suffix map[int]int) bool {
 	}
 
 	for x := start.x; x <= fin.x; x++ {
-		if pref, ok := prefix[x]; ok && pref > start.x {
+		if prefix[x] > start.x {
 			return false
 		}
-		if suf, ok := suffix[x]; ok && suf < fin.y {
+		if suffix[x] < fin.y {
 			return false
 		}
 	}
