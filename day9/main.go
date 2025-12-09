@@ -91,7 +91,7 @@ func PartTwo(lines []string) int {
 	}
 
 	// lets process the grid and find for each row that contains a point
-	// mark down the location of any . that are adjacent to #
+	// mark down the location of any . that are adjacent to # or X
 	// then we can check if any of those . locations fall within our range
 	adjacentDotLocations := make([][]int, len(grid))
 	for i := range grid {
