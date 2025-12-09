@@ -114,29 +114,46 @@ func abs(n int) int {
 }
 
 func isValid(p, q point, grid [][]byte) bool {
-	//	var start, fin point
-	//
-	//	if p.x == q.x {
-	//		if p.y < q.y {
-	//			start = p
-	//			fin = q
-	//		} else {
-	//			start = q
-	//			fin = p
-	//		}
-	//	} else if p.x < q.x {
-	//		start = p
-	//		fin = q
-	//	} else {
-	//		start = q
-	//		fin = p
-	//	}
-	//
-	//	for x := start.x; x <= fin.x; x++ {
-	//		if prefix[x] > start.x || prefix[x] > fin.x || suffix[x] < start.y || suffix[x] < fin.y {
-	//			return false
-	//		}
-	//	}
+	var start, fin point
+
+	if p.x == q.x {
+		if p.y < q.y {
+			start = p
+			fin = q
+		} else {
+			start = q
+			fin = p
+		}
+	} else if p.x < q.x {
+		start = p
+		fin = q
+	} else {
+		start = q
+		fin = p
+	}
+
+	// find the first x in start col that does not have a following x (to account for sibling lines)
+	// we just need to go as far as the fin x
+	for x := start.x + 1; ; x++ {
+		if x >= fin.x {
+			break
+		}
+
+		if grid[x][start.y] == '#' && len(grid) > x+1 && grid[x+1][start.y] != '#' {
+			return false
+		}
+	}
+
+	// find the first y in start row that does not have a following y (to account for sibling lines)
+	for y := start.y + 1; ; y++ {
+		if y >= fin.y {
+			break
+		}
+
+		if grid[start.x][y] == '#' && len(grid[start.x]) > y+1 && grid[start.x][y+1] != '#' {
+			return false
+		}
+	}
 
 	return true
 }
