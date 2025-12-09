@@ -52,15 +52,11 @@ func PartTwo(lines []string) int {
 		maxY = max(maxY, p.y)
 	}
 
-	fmt.Println("points scanned")
-
 	// ok were going to just make a grid and simulate this
 	grid := make([][]byte, maxX+3)
 	for i := range grid {
 		grid[i] = make([]byte, maxY+3)
 	}
-
-	fmt.Println("grid created")
 
 	// connect adjacent points in list
 	connect(points[0], points[len(points)-1], grid)
@@ -70,27 +66,8 @@ func PartTwo(lines []string) int {
 		connect(p, lp, grid)
 	}
 
-	fmt.Println("grid connected")
-
 	// fill outer grid
 	fill(grid)
-
-	fmt.Println("outer grid filled")
-
-	// fill inner grid
-	for i := range grid {
-		for j := range grid[i] {
-			if grid[i][j] == 0 {
-				grid[i][j] = 'X'
-			}
-		}
-	}
-
-	fmt.Println("inner grid filled")
-
-	//	for _, row := range grid {
-	//		fmt.Println(string(row))
-	//	}
 
 	// lets process the grid and find for each row that contains a point
 	// mark down the location of any . that are adjacent to # or X
@@ -117,16 +94,11 @@ func PartTwo(lines []string) int {
 		}
 	}
 
-	fmt.Println("grid adjacent dot locations processed")
-	//	for _, row := range adjacentDotLocationsX {
-	//		fmt.Println(row)
-	//	}
-
 	var ans int
 	for i, p := range points {
 		for j := i + 1; j < len(points); j++ {
 			q := points[j]
-			if isValid(p, q, grid, adjacentDotLocationsX, adjacentDotLocationsY) {
+			if isValid(p, q, adjacentDotLocationsX, adjacentDotLocationsY) {
 				// l * w
 				w := abs(p.x-q.x) + 1
 				l := abs(p.y-q.y) + 1
@@ -187,7 +159,7 @@ func abs(n int) int {
 	return -n
 }
 
-func isValid(p, q point, grid [][]byte, adjacentDotLocationsX, adjacentDotLocationsY [][]int) bool {
+func isValid(p, q point, adjacentDotLocationsX, adjacentDotLocationsY [][]int) bool {
 	minX := min(p.x, q.x)
 	minY := min(p.y, q.y)
 	maxX := max(p.x, q.x)

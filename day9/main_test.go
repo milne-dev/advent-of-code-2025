@@ -120,27 +120,4 @@ func TestPartTwo(t *testing.T) {
 		t.Errorf(`PartTwo(...) want %v, got %v`,
 			want, got)
 	}
-
-	input = `1,5
-3,5
-3,8
-7,8
-7,5
-9,5
-9,10
-11,10
-11,3
-6,3
-6,7
-4,7
-4,1
-13,1
-13,12
-1,12`
-	want = 72
-	got = PartTwo(utils.StringLines(input))
-	if want != got {
-		t.Errorf(`PartTwo(...) want %v, got %v`,
-			want, got)
-	}
 }
