@@ -75,4 +75,24 @@ func TestPartTwo(t *testing.T) {
 		t.Errorf(`PartTwo(...) want %v, got %v`,
 			want, got)
 	}
+
+	// lets add test cases from the web...
+	input = `1,0
+3,0
+3,6
+16,6
+16,0
+18,0
+18,9
+13,9
+13,7
+6,7
+6,9
+1,9`
+	want = 30
+	got = PartTwo(utils.StringLines(input))
+	if want != got {
+		t.Errorf(`PartTwo(...) want %v, got %v`,
+			want, got)
+	}
 }

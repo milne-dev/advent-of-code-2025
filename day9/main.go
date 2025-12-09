@@ -44,6 +44,8 @@ func PartTwo(lines []string) int {
 	for _, line := range lines {
 		var p point
 		fmt.Sscanf(line, "%d,%d", &p.y, &p.x)
+		p.x++
+		p.y++
 		points = append(points, p)
 
 		maxX = max(maxX, p.x)
@@ -53,9 +55,9 @@ func PartTwo(lines []string) int {
 	fmt.Println("points scanned")
 
 	// ok were going to just make a grid and simulate this
-	grid := make([][]byte, maxX+2)
+	grid := make([][]byte, maxX+3)
 	for i := range grid {
-		grid[i] = make([]byte, maxY+2)
+		grid[i] = make([]byte, maxY+3)
 	}
 
 	fmt.Println("grid created")
@@ -126,13 +128,15 @@ func PartTwo(lines []string) int {
 }
 
 func fill(grid [][]byte, i, j int) {
-	if i == len(grid) || j == len(grid[0]) || grid[i][j] != 0 {
+	if i < 0 || j < 0 || i == len(grid) || j == len(grid[0]) || grid[i][j] != 0 {
 		return
 	}
 
 	grid[i][j] = '.'
 	fill(grid, i+1, j)
 	fill(grid, i, j+1)
+	fill(grid, i-1, j)
+	fill(grid, i, j-1)
 }
 
 func connect(p, q point, grid [][]byte) {
