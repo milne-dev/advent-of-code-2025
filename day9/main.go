@@ -53,9 +53,9 @@ func PartTwo(lines []string) int {
 	fmt.Println("points scanned")
 
 	// ok were going to just make a grid and simulate this
-	grid := make([][]byte, maxX+1)
+	grid := make([][]byte, maxX+2)
 	for i := range grid {
-		grid[i] = make([]byte, maxY+1)
+		grid[i] = make([]byte, maxY+2)
 	}
 
 	fmt.Println("grid created")
@@ -75,6 +75,10 @@ func PartTwo(lines []string) int {
 
 	fmt.Println("outer grid filled")
 
+	//	for _, row := range grid {
+	//		fmt.Println(string(row))
+	//	}
+
 	// lets process the grid and find for each row that contains a point
 	// mark down the location of any . that are adjacent to #
 	// then we can check if any of those . locations fall within our range
@@ -90,6 +94,9 @@ func PartTwo(lines []string) int {
 	}
 
 	fmt.Println("grid adjacent dot locations processed")
+	//	for _, row := range adjacentDotLocations {
+	//		fmt.Println(row)
+	//	}
 
 	var ans int
 	for i, p := range points {
