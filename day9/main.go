@@ -73,7 +73,7 @@ func PartTwo(lines []string) int {
 	fmt.Println("grid connected")
 
 	// fill outer grid
-	fill(grid, 0, 0)
+	fill(grid)
 
 	fmt.Println("outer grid filled")
 
@@ -88,9 +88,9 @@ func PartTwo(lines []string) int {
 
 	fmt.Println("inner grid filled")
 
-	for _, row := range grid {
-		fmt.Println(string(row))
-	}
+	//	for _, row := range grid {
+	//		fmt.Println(string(row))
+	//	}
 
 	// lets process the grid and find for each row that contains a point
 	// mark down the location of any . that are adjacent to # or X
@@ -127,16 +127,29 @@ func PartTwo(lines []string) int {
 	return ans
 }
 
-func fill(grid [][]byte, i, j int) {
-	if i < 0 || j < 0 || i == len(grid) || j == len(grid[0]) || grid[i][j] != 0 {
-		return
-	}
+func fill(grid [][]byte) {
+	q := [][2]int{{0, 0}}
 
-	grid[i][j] = '.'
-	fill(grid, i+1, j)
-	fill(grid, i, j+1)
-	fill(grid, i-1, j)
-	fill(grid, i, j-1)
+	for len(q) > 0 {
+		var nq [][2]int
+
+		for _, pos := range q {
+			i, j := pos[0], pos[1]
+
+			if i < 0 || j < 0 || i == len(grid) || j == len(grid[0]) || grid[i][j] != 0 {
+				continue
+			}
+
+			grid[i][j] = '.'
+
+			nq = append(nq, [2]int{i + 1, j})
+			nq = append(nq, [2]int{i, j + 1})
+			nq = append(nq, [2]int{i - 1, j})
+			nq = append(nq, [2]int{i, j - 1})
+		}
+
+		q = nq
+	}
 }
 
 func connect(p, q point, grid [][]byte) {
