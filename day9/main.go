@@ -113,14 +113,21 @@ func PartTwo(lines []string) int {
 			q := points[j]
 			if isValid(p, q, prefix, suffix) {
 				// l * w
-				w := max(p.y, q.y) - min(p.y, q.y) + 1
-				l := max(p.x, q.x) - min(p.x, q.x) + 1
+				w := abs(p.x-q.x) + 1
+				l := abs(p.y-q.y) + 1
 				area := l * w
 				ans = max(ans, area)
 			}
 		}
 	}
 	return ans
+}
+
+func abs(n int) int {
+	if n >= 0 {
+		return n
+	}
+	return -n
 }
 
 func isValid(p, q point, prefix, suffix []int) bool {
