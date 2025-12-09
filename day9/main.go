@@ -3,7 +3,6 @@ package main
 import (
 	"aoc2025/utils"
 	"fmt"
-	"math"
 )
 
 func main() {
@@ -39,7 +38,6 @@ func PartOne(lines []string) int {
 }
 
 func PartTwo(lines []string) int {
-	minX := math.MaxInt
 	var maxX, maxY int
 
 	var points []point
@@ -47,8 +45,6 @@ func PartTwo(lines []string) int {
 		var p point
 		fmt.Sscanf(line, "%d,%d", &p.y, &p.x)
 		points = append(points, p)
-
-		minX = min(minX, p.x)
 
 		maxX = max(maxX, p.x)
 		maxY = max(maxY, p.y)
@@ -58,9 +54,6 @@ func PartTwo(lines []string) int {
 	grid := make([][]byte, maxX+1)
 	for i := range grid {
 		grid[i] = make([]byte, maxY+1)
-		for j := range grid[i] {
-			grid[i][j] = '.'
-		}
 	}
 
 	// connect adjacent points in list
@@ -68,13 +61,11 @@ func PartTwo(lines []string) int {
 	for i := 1; i < len(points); i++ {
 		lp := points[i-1]
 		p := points[i]
-
 		connect(p, lp, grid)
 	}
 
-	for _, row := range grid {
-		fmt.Println(string(row))
-	}
+	// fill outer grid
+	fill(grid, 0, 0)
 
 	var ans int
 	for i, p := range points {
@@ -90,6 +81,16 @@ func PartTwo(lines []string) int {
 		}
 	}
 	return ans
+}
+
+func fill(grid [][]byte, i, j int) {
+	if i == len(grid) || j == len(grid[0]) || grid[i][j] != 0 {
+		return
+	}
+
+	grid[i][j] = '.'
+	fill(grid, i+1, j)
+	fill(grid, i, j+1)
 }
 
 func connect(p, q point, grid [][]byte) {
@@ -114,46 +115,16 @@ func abs(n int) int {
 }
 
 func isValid(p, q point, grid [][]byte) bool {
-	var start, fin point
-
-	if p.x == q.x {
-		if p.y < q.y {
-			start = p
-			fin = q
-		} else {
-			start = q
-			fin = p
-		}
-	} else if p.x < q.x {
-		start = p
-		fin = q
-	} else {
-		start = q
-		fin = p
-	}
-
-	// find the first x in start col that does not have a following x (to account for sibling lines)
-	// we just need to go as far as the fin x
-	for x := start.x + 1; ; x++ {
-		if x >= fin.x {
-			break
-		}
-
-		if grid[x][start.y] == '#' && len(grid) > x+1 && grid[x+1][start.y] != '#' {
-			return false
+	minX := min(p.x, q.x)
+	minY := min(p.y, q.y)
+	maxX := max(p.x, q.x)
+	maxY := max(p.y, q.y)
+	for i := minX; i <= maxX; i++ {
+		for j := minY; j <= maxY; j++ {
+			if grid[i][j] == '.' {
+				return false
+			}
 		}
 	}
-
-	// find the first y in start row that does not have a following y (to account for sibling lines)
-	for y := start.y + 1; ; y++ {
-		if y >= fin.y {
-			break
-		}
-
-		if grid[start.x][y] == '#' && len(grid[start.x]) > y+1 && grid[start.x][y+1] != '#' {
-			return false
-		}
-	}
-
 	return true
 }
