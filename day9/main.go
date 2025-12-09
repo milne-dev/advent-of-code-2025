@@ -105,9 +105,9 @@ func PartTwo(lines []string) int {
 	}
 
 	fmt.Println("grid adjacent dot locations processed")
-	for _, row := range adjacentDotLocations {
-		fmt.Println(row)
-	}
+	//	for _, row := range adjacentDotLocations {
+	//		fmt.Println(row)
+	//	}
 
 	var ans int
 	for i, p := range points {
