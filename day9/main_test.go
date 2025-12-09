@@ -6,8 +6,15 @@ import (
 )
 
 func TestPartOne(t *testing.T) {
-	input := ``
-	want := 1
+	input := `7,1
+11,1
+11,7
+9,7
+9,5
+2,5
+2,3
+7,3`
+	want := 50
 	got := PartOne(utils.StringLines(input))
 	if want != got {
 		t.Errorf(`PartOne(...) want %v, got %v`,
