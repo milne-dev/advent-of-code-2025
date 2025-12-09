@@ -75,9 +75,20 @@ func PartTwo(lines []string) int {
 
 	fmt.Println("outer grid filled")
 
-	//	for _, row := range grid {
-	//		fmt.Println(string(row))
-	//	}
+	// fill inner grid
+	for i := range grid {
+		for j := range grid[i] {
+			if grid[i][j] == 0 {
+				grid[i][j] = 'X'
+			}
+		}
+	}
+
+	fmt.Println("inner grid filled")
+
+	for _, row := range grid {
+		fmt.Println(string(row))
+	}
 
 	// lets process the grid and find for each row that contains a point
 	// mark down the location of any . that are adjacent to #
@@ -86,7 +97,7 @@ func PartTwo(lines []string) int {
 	for i := range grid {
 		for j := range grid[i] {
 			if grid[i][j] == '.' {
-				if (j > 0 && grid[i][j-1] == '#') || (j < len(grid[i])-1 && grid[i][j+1] == '#') {
+				if (j > 0 && grid[i][j-1] != '.') || (j < len(grid[i])-1 && grid[i][j+1] != '.') {
 					adjacentDotLocations[i] = append(adjacentDotLocations[i], j)
 				}
 			}
@@ -94,13 +105,12 @@ func PartTwo(lines []string) int {
 	}
 
 	fmt.Println("grid adjacent dot locations processed")
-	//	for _, row := range adjacentDotLocations {
-	//		fmt.Println(row)
-	//	}
+	for _, row := range adjacentDotLocations {
+		fmt.Println(row)
+	}
 
 	var ans int
 	for i, p := range points {
-		fmt.Println("processing", i+1, "/", len(points))
 		for j := i + 1; j < len(points); j++ {
 			q := points[j]
 			if isValid(p, q, grid, adjacentDotLocations) {
@@ -126,15 +136,18 @@ func fill(grid [][]byte, i, j int) {
 }
 
 func connect(p, q point, grid [][]byte) {
+	grid[p.x][p.y] = '#'
+	grid[q.x][q.y] = '#'
+
 	if p.x == q.x {
 		// same row
-		for j := min(p.y, q.y); j <= max(p.y, q.y); j++ {
-			grid[p.x][j] = '#'
+		for j := min(p.y, q.y) + 1; j < max(p.y, q.y); j++ {
+			grid[p.x][j] = 'X'
 		}
 	} else {
 		// same column
-		for k := min(p.x, q.x); k <= max(p.x, q.x); k++ {
-			grid[k][p.y] = '#'
+		for k := min(p.x, q.x) + 1; k < max(p.x, q.x); k++ {
+			grid[k][p.y] = 'X'
 		}
 	}
 }
