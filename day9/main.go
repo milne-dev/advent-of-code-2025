@@ -143,10 +143,7 @@ func isValid(p, q point, prefix, suffix []int) bool {
 	}
 
 	for x := start.x; x <= fin.x; x++ {
-		if prefix[x] > start.x {
-			return false
-		}
-		if suffix[x] < fin.y {
+		if prefix[x] > start.x || suffix[x] < fin.y {
 			return false
 		}
 	}
