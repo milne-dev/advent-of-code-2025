@@ -4,7 +4,6 @@ import (
 	"aoc2025/utils"
 	"fmt"
 	"math"
-	"slices"
 )
 
 func main() {
@@ -64,54 +63,24 @@ func PartTwo(lines []string) int {
 		}
 	}
 
-	// lets just map this out a bit
-	// for x []y
-	horizPoints := make(map[int][]int)
-	// for y []x
-	vertPoints := make(map[int][]int)
-	for _, p := range points {
-		horizPoints[p.x] = append(horizPoints[p.x], p.y)
-		vertPoints[p.y] = append(vertPoints[p.y], p.x)
+	// connect adjacent points in list
+	connect(points[0], points[len(points)-1], grid)
+	for i := 1; i < len(points); i++ {
+		lp := points[i-1]
+		p := points[i]
+
+		connect(p, lp, grid)
 	}
 
-	// now lets color in the lines
-	for i, js := range horizPoints {
-		minJ := slices.Min(js)
-		maxJ := slices.Max(js)
-		for j := minJ; j <= maxJ; j++ {
-			grid[i][j] = '#'
-		}
-	}
-
-	for j, is := range vertPoints {
-		minI := slices.Min(is)
-		maxI := slices.Max(is)
-		for i := minI; i <= maxI; i++ {
-			grid[i][j] = '#'
-		}
-	}
-
-	// ok time to capture min and max of each line in prefix/suffix
-	prefix := make([]int, maxX+1)
-	for i := range prefix {
-		prefix[i] = math.MaxInt
-	}
-	suffix := make([]int, maxX+1)
-
-	for i := minX; i <= maxX; i++ {
-		for j := range grid[i] {
-			if grid[i][j] == '#' {
-				prefix[i] = min(prefix[i], j)
-				suffix[i] = max(prefix[i], j)
-			}
-		}
+	for _, row := range grid {
+		fmt.Println(string(row))
 	}
 
 	var ans int
 	for i, p := range points {
 		for j := i + 1; j < len(points); j++ {
 			q := points[j]
-			if isValid(p, q, prefix, suffix) {
+			if isValid(p, q, grid) {
 				// l * w
 				w := abs(p.x-q.x) + 1
 				l := abs(p.y-q.y) + 1
@@ -123,6 +92,20 @@ func PartTwo(lines []string) int {
 	return ans
 }
 
+func connect(p, q point, grid [][]byte) {
+	if p.x == q.x {
+		// same row
+		for j := min(p.y, q.y); j <= max(p.y, q.y); j++ {
+			grid[p.x][j] = '#'
+		}
+	} else {
+		// same column
+		for k := min(p.x, q.x); k <= max(p.x, q.x); k++ {
+			grid[k][p.y] = '#'
+		}
+	}
+}
+
 func abs(n int) int {
 	if n >= 0 {
 		return n
@@ -130,30 +113,30 @@ func abs(n int) int {
 	return -n
 }
 
-func isValid(p, q point, prefix, suffix []int) bool {
-	var start, fin point
-
-	if p.x == q.x {
-		if p.y < q.y {
-			start = p
-			fin = q
-		} else {
-			start = q
-			fin = p
-		}
-	} else if p.x < q.x {
-		start = p
-		fin = q
-	} else {
-		start = q
-		fin = p
-	}
-
-	for x := start.x; x <= fin.x; x++ {
-		if prefix[x] > start.x || prefix[x] > fin.x || suffix[x] < start.y || suffix[x] < fin.y {
-			return false
-		}
-	}
+func isValid(p, q point, grid [][]byte) bool {
+	//	var start, fin point
+	//
+	//	if p.x == q.x {
+	//		if p.y < q.y {
+	//			start = p
+	//			fin = q
+	//		} else {
+	//			start = q
+	//			fin = p
+	//		}
+	//	} else if p.x < q.x {
+	//		start = p
+	//		fin = q
+	//	} else {
+	//		start = q
+	//		fin = p
+	//	}
+	//
+	//	for x := start.x; x <= fin.x; x++ {
+	//		if prefix[x] > start.x || prefix[x] > fin.x || suffix[x] < start.y || suffix[x] < fin.y {
+	//			return false
+	//		}
+	//	}
 
 	return true
 }
