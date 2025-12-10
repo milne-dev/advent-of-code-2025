@@ -3,6 +3,8 @@ package main
 import (
 	"aoc2025/utils"
 	"fmt"
+	"strconv"
+	"strings"
 )
 
 func main() {
@@ -128,5 +130,115 @@ func applyButton(current int, b Button) int {
 }
 
 func PartTwo(lines []string) int {
-	return 0
+	var ans int
+
+	for _, line := range lines {
+		ans += processLineP2(line)
+	}
+
+	return ans
+}
+
+func processLineP2(line string) int {
+	var target []int
+	var buttons []Button
+
+	mode := ModeTarget
+	var buttonGroup Button
+	var buttonNum int
+
+	var voltageNum int
+
+	fmt.Println("-----------------------")
+
+	for i := 1; i < len(line); i++ {
+		c := line[i]
+
+		if c == ' ' || c == '(' {
+			continue
+		}
+
+		switch mode {
+		case ModeTarget:
+			if c == ']' {
+				mode = ModeButtons
+				continue
+			}
+
+		case ModeButtons:
+			if c == '{' {
+				mode = ModeVoltage
+				continue
+			}
+
+			switch c {
+			case ',':
+				buttonGroup = append(buttonGroup, buttonNum)
+				buttonNum = 0
+			case ')':
+				buttonGroup = append(buttonGroup, buttonNum)
+				buttonNum = 0
+				buttons = append(buttons, buttonGroup)
+				buttonGroup = Button{}
+			default:
+				buttonNum = buttonNum*10 + int(c-'0')
+			}
+
+		case ModeVoltage:
+			if c == '}' {
+				target = append(target, voltageNum)
+				continue
+			}
+
+			if c == ',' {
+				target = append(target, voltageNum)
+				voltageNum = 0
+			} else {
+				voltageNum = voltageNum*10 + int(c-'0')
+			}
+		}
+	}
+
+	fmt.Println(buttons)
+	fmt.Println("target", target)
+
+	var passes int
+	q := make(map[int]struct{})
+
+	for _, button := range buttons {
+		q[applyButton(0, button)] = struct{}{}
+	}
+
+	//outer:
+	//	for len(q) > 0 {
+	//		nq := make(map[int]struct{})
+	//		passes++
+	//
+	//		for current := range q {
+	//			if current == target {
+	//				break outer
+	//			}
+	//
+	//			// send this one back to the q with each possible btn press
+	//			for _, b := range buttons {
+	//				nq[applyButton(current, b)] = struct{}{}
+	//			}
+	//		}
+	//
+	//		q = nq
+	//	}
+
+	return passes
+}
+
+// used for map key
+func intArrToStr(a []int) string {
+	var b strings.Builder
+	for i, n := range a {
+		b.WriteString(strconv.Itoa(n))
+		if i != len(a)-1 {
+			b.WriteByte(',')
+		}
+	}
+	return b.String()
 }
