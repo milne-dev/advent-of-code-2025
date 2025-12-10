@@ -134,8 +134,7 @@ func PartTwo(lines []string) int {
 }
 
 func processLineP2(line string) int {
-	var target [10]uint16
-	var ti int
+	var target []uint16
 	var buttons []Button
 
 	mode := ModeTarget
@@ -179,14 +178,12 @@ func processLineP2(line string) int {
 
 		case ModeVoltage:
 			if c == '}' {
-				target[ti] = voltageNum
-				ti++
+				target = append(target, voltageNum)
 				continue
 			}
 
 			if c == ',' {
-				target[ti] = voltageNum
-				ti++
+				target = append(target, voltageNum)
 				voltageNum = 0
 			} else {
 				voltageNum = voltageNum*10 + uint16(c-'0')
@@ -194,28 +191,34 @@ func processLineP2(line string) int {
 		}
 	}
 
-	q := make(map[[10]uint16]int)
-	q[[10]uint16{}] = 0
+	q := make(map[[10]uint16]struct{})
+	q[[10]uint16{}] = struct{}{}
 	var passes int
-	targetSum := sumTarget(target)
 
 	for len(q) > 0 {
-		nq := make(map[[10]uint16]int)
+		nq := make(map[[10]uint16]struct{})
 
-		for current, sum := range q {
-			if sum > targetSum {
-				continue
+	inner:
+		for current := range q {
+			success := true
+			for i := range target {
+				if target[i] != current[i] {
+					success = false
+				} else if target[i] < current[i] {
+					continue inner
+				}
 			}
-
-			if current == target {
+			if success {
 				return passes
 			}
 
 			// send this one back to the q with each possible btn press
 			for _, b := range buttons {
 				clone := current
-				applyBtnToVoltage(&clone, b)
-				nq[clone] = sum + len(b)
+				for _, i := range b {
+					clone[i]++
+				}
+				nq[clone] = struct{}{}
 			}
 		}
 
@@ -226,16 +229,10 @@ func processLineP2(line string) int {
 	return 0
 }
 
-func sumTarget(a [10]uint16) int {
+func sumTarget(a []uint16) int {
 	var n int
 	for _, x := range a {
 		n += int(x)
 	}
 	return n
-}
-
-func applyBtnToVoltage(voltage *[10]uint16, button Button) {
-	for _, i := range button {
-		voltage[i]++
-	}
 }
