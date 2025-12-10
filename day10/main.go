@@ -8,7 +8,7 @@ import (
 func main() {
 	input := utils.ReadInput()
 	lines := utils.StringLines(input)
-	fmt.Println(PartOne(lines))
+	fmt.Println(PartTwo(lines))
 }
 
 const (
@@ -125,4 +125,8 @@ func applyButton(current int, b Button) int {
 		current ^= mask
 	}
 	return current
+}
+
+func PartTwo(lines []string) int {
+	return 0
 }
