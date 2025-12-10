@@ -2,10 +2,7 @@ package main
 
 import (
 	"aoc2025/utils"
-	"cmp"
 	"fmt"
-	"github.com/emirpasic/gods/v2/queues/priorityqueue"
-	"slices"
 )
 
 func main() {
@@ -197,68 +194,39 @@ func processLineP2(line string) int {
 		}
 	}
 
-	slices.SortFunc(buttons, func(a, b Button) int {
-		return -cmp.Compare(len(a), len(b))
-	})
+	q := make(map[[10]uint16]int)
+	q[[10]uint16{}] = 0
+	var passes int
+	targetSum := sumTarget(target)
 
-	pq := priorityqueue.NewWith[*pqrec](func(x, y *pqrec) int {
-		return -cmp.Compare(x.sum, y.sum)
-	})
+	for len(q) > 0 {
+		nq := make(map[[10]uint16]int)
 
-	pq.Enqueue(&pqrec{
-		current: [10]uint16{},
-	})
+		for current, sum := range q {
+			if sum > targetSum {
+				continue
+			}
 
-	targetSum := sum(target)
+			if current == target {
+				return passes
+			}
 
-	visited := make(map[[10]uint16]bool)
-
-	for pq.Size() > 0 {
-		rec, _ := pq.Dequeue()
-		current := rec.current
-
-		if rec.sum > targetSum {
-			continue
-		}
-
-		if visited[rec.current] {
-			continue
-		}
-		visited[rec.current] = true
-
-		success := true
-		for i := range current {
-			if current[i] != target[i] {
-				success = false
-				break
+			// send this one back to the q with each possible btn press
+			for _, b := range buttons {
+				clone := current
+				applyBtnToVoltage(&clone, b)
+				nq[clone] = sum + len(b)
 			}
 		}
-		if success {
-			return rec.passes
-		}
 
-		// send this one back to the q with each possible btn press
-		for _, b := range buttons {
-			var clone [10]uint16
-			copy(clone[:], current[:])
-			applyBtnToVoltage(&clone, b)
-			pq.Enqueue(&pqrec{
-				current: clone,
-				passes:  rec.passes + 1,
-				sum:     rec.sum + len(b),
-			})
-		}
+		q = nq
+		passes++
 	}
 
 	return 0
 }
 
-type pqrec struct {
-	current     [10]uint16
-	passes, sum int
-}
-
-func sum(a [10]uint16) int {
+func sumTarget(a [10]uint16) int {
 	var n int
 	for _, x := range a {
 		n += int(x)
