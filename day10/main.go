@@ -137,14 +137,14 @@ func PartTwo(lines []string) int {
 }
 
 func processLineP2(line string) int {
-	var target []int
+	var target []uint16
 	var buttons []Button
 
 	mode := ModeTarget
 	var buttonGroup Button
 	var buttonNum int
 
-	var voltageNum int
+	var voltageNum uint16
 
 	for i := 1; i < len(line); i++ {
 		c := line[i]
@@ -189,7 +189,7 @@ func processLineP2(line string) int {
 				target = append(target, voltageNum)
 				voltageNum = 0
 			} else {
-				voltageNum = voltageNum*10 + int(c-'0')
+				voltageNum = voltageNum*10 + uint16(c-'0')
 			}
 		}
 	}
@@ -203,7 +203,7 @@ func processLineP2(line string) int {
 	})
 
 	pq.Enqueue(&pqrec{
-		current: make([]int, len(target)),
+		current: make([]uint16, len(target)),
 	})
 
 	targetSum := sum(target)
@@ -229,13 +229,13 @@ func processLineP2(line string) int {
 
 		// send this one back to the q with each possible btn press
 		for _, b := range buttons {
-			clone := make([]int, len(current))
+			clone := make([]uint16, len(current))
 			copy(clone, current)
 			applyBtnToVoltage(clone, b)
 			pq.Enqueue(&pqrec{
 				current: clone,
 				passes:  rec.passes + 1,
-				sum:     sum(clone),
+				sum:     rec.sum + len(b),
 			})
 		}
 	}
@@ -244,19 +244,19 @@ func processLineP2(line string) int {
 }
 
 type pqrec struct {
-	current     []int
+	current     []uint16
 	passes, sum int
 }
 
-func sum(a []int) int {
+func sum(a []uint16) int {
 	var n int
 	for _, x := range a {
-		n += x
+		n += int(x)
 	}
 	return n
 }
 
-func applyBtnToVoltage(voltage []int, button Button) {
+func applyBtnToVoltage(voltage []uint16, button Button) {
 	for _, i := range button {
 		voltage[i]++
 	}
