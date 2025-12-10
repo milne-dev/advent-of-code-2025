@@ -194,18 +194,12 @@ func processLineP2(line string) int {
 	q := make(map[[10]uint16]struct{})
 	q[[10]uint16{}] = struct{}{}
 	var passes int
-	visited := make(map[[10]uint16]struct{})
 
 	for len(q) > 0 {
 		nq := make(map[[10]uint16]struct{})
 
 	inner:
 		for current := range q {
-			if _, ok := visited[current]; ok {
-				continue inner
-			}
-			visited[current] = struct{}{}
-
 			success := true
 			for i := range target {
 				if target[i] != current[i] {
@@ -230,6 +224,7 @@ func processLineP2(line string) int {
 
 		q = nq
 		passes++
+		fmt.Println("completed pass", passes, "q size", len(q))
 	}
 
 	return 0
