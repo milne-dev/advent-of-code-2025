@@ -129,7 +129,7 @@ func PartTwo(lines []string) int {
 	var ans int
 
 	for i, line := range lines {
-		fmt.Println("line x of y", i+1, len(lines))
+		fmt.Printf("line %d of %d\n", i+1, len(lines))
 		ans += processLineP2(line)
 	}
 
@@ -137,7 +137,8 @@ func PartTwo(lines []string) int {
 }
 
 func processLineP2(line string) int {
-	var target []uint16
+	var target [10]uint16
+	var ti int
 	var buttons []Button
 
 	mode := ModeTarget
@@ -181,12 +182,14 @@ func processLineP2(line string) int {
 
 		case ModeVoltage:
 			if c == '}' {
-				target = append(target, voltageNum)
+				target[ti] = voltageNum
+				ti++
 				continue
 			}
 
 			if c == ',' {
-				target = append(target, voltageNum)
+				target[ti] = voltageNum
+				ti++
 				voltageNum = 0
 			} else {
 				voltageNum = voltageNum*10 + uint16(c-'0')
@@ -203,10 +206,12 @@ func processLineP2(line string) int {
 	})
 
 	pq.Enqueue(&pqrec{
-		current: make([]uint16, len(target)),
+		current: [10]uint16{},
 	})
 
 	targetSum := sum(target)
+
+	visited := make(map[[10]uint16]bool)
 
 	for pq.Size() > 0 {
 		rec, _ := pq.Dequeue()
@@ -215,6 +220,11 @@ func processLineP2(line string) int {
 		if rec.sum > targetSum {
 			continue
 		}
+
+		if visited[rec.current] {
+			continue
+		}
+		visited[rec.current] = true
 
 		success := true
 		for i := range current {
@@ -229,9 +239,9 @@ func processLineP2(line string) int {
 
 		// send this one back to the q with each possible btn press
 		for _, b := range buttons {
-			clone := make([]uint16, len(current))
-			copy(clone, current)
-			applyBtnToVoltage(clone, b)
+			var clone [10]uint16
+			copy(clone[:], current[:])
+			applyBtnToVoltage(&clone, b)
 			pq.Enqueue(&pqrec{
 				current: clone,
 				passes:  rec.passes + 1,
@@ -244,11 +254,11 @@ func processLineP2(line string) int {
 }
 
 type pqrec struct {
-	current     []uint16
+	current     [10]uint16
 	passes, sum int
 }
 
-func sum(a []uint16) int {
+func sum(a [10]uint16) int {
 	var n int
 	for _, x := range a {
 		n += int(x)
@@ -256,7 +266,7 @@ func sum(a []uint16) int {
 	return n
 }
 
-func applyBtnToVoltage(voltage []uint16, button Button) {
+func applyBtnToVoltage(voltage *[10]uint16, button Button) {
 	for _, i := range button {
 		voltage[i]++
 	}
