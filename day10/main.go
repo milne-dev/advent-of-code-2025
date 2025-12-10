@@ -149,8 +149,6 @@ func processLineP2(line string) int {
 
 	var voltageNum int
 
-	fmt.Println("-----------------------")
-
 	for i := 1; i < len(line); i++ {
 		c := line[i]
 
@@ -199,34 +197,45 @@ func processLineP2(line string) int {
 		}
 	}
 
-	fmt.Println(buttons)
-	fmt.Println("target", target)
-
 	var passes int
-	q := make(map[int]struct{})
+	q := make(map[string][]int)
 
 	for _, button := range buttons {
-		q[applyButton(0, button)] = struct{}{}
+		a := make([]int, len(target))
+		q[applyBtnToVoltage(a, button)] = a
 	}
 
-	//outer:
-	//	for len(q) > 0 {
-	//		nq := make(map[int]struct{})
-	//		passes++
-	//
-	//		for current := range q {
-	//			if current == target {
-	//				break outer
-	//			}
-	//
-	//			// send this one back to the q with each possible btn press
-	//			for _, b := range buttons {
-	//				nq[applyButton(current, b)] = struct{}{}
-	//			}
-	//		}
-	//
-	//		q = nq
-	//	}
+outer:
+	for len(q) > 0 {
+		nq := make(map[string][]int)
+		passes++
+
+	ql:
+		for _, current := range q {
+			success := true
+			for i := range current {
+				if current[i] > target[i] {
+					continue ql
+				}
+				if current[i] != target[i] {
+					success = false
+					break
+				}
+			}
+			if success {
+				break outer
+			}
+
+			// send this one back to the q with each possible btn press
+			for _, b := range buttons {
+				clone := make([]int, len(current))
+				copy(clone, current)
+				nq[applyBtnToVoltage(clone, b)] = clone
+			}
+		}
+
+		q = nq
+	}
 
 	return passes
 }
@@ -241,4 +250,11 @@ func intArrToStr(a []int) string {
 		}
 	}
 	return b.String()
+}
+
+func applyBtnToVoltage(voltage []int, button Button) string {
+	for _, i := range button {
+		voltage[i]++
+	}
+	return intArrToStr(voltage)
 }
