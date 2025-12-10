@@ -2,9 +2,10 @@ package main
 
 import (
 	"aoc2025/utils"
+	"cmp"
 	"fmt"
-	"strconv"
-	"strings"
+	"github.com/emirpasic/gods/v2/queues/priorityqueue"
+	"slices"
 )
 
 func main() {
@@ -18,11 +19,6 @@ const (
 	ModeButtons
 	ModeVoltage
 )
-
-type qrec struct {
-	current []bool
-	button  []int
-}
 
 type Button []int
 
@@ -132,7 +128,8 @@ func applyButton(current int, b Button) int {
 func PartTwo(lines []string) int {
 	var ans int
 
-	for _, line := range lines {
+	for i, line := range lines {
+		fmt.Println("line x of y", i+1, len(lines))
 		ans += processLineP2(line)
 	}
 
@@ -197,64 +194,70 @@ func processLineP2(line string) int {
 		}
 	}
 
-	var passes int
-	q := make(map[string][]int)
+	slices.SortFunc(buttons, func(a, b Button) int {
+		return -cmp.Compare(len(a), len(b))
+	})
 
-	for _, button := range buttons {
-		a := make([]int, len(target))
-		q[applyBtnToVoltage(a, button)] = a
-	}
+	pq := priorityqueue.NewWith[*pqrec](func(x, y *pqrec) int {
+		return -cmp.Compare(x.sum, y.sum)
+	})
 
-outer:
-	for len(q) > 0 {
-		nq := make(map[string][]int)
-		passes++
+	pq.Enqueue(&pqrec{
+		current: make([]int, len(target)),
+	})
 
-	ql:
-		for _, current := range q {
-			success := true
-			for i := range current {
-				if current[i] > target[i] {
-					continue ql
-				}
-				if current[i] != target[i] {
-					success = false
-					break
-				}
-			}
-			if success {
-				break outer
-			}
+	targetSum := sum(target)
 
-			// send this one back to the q with each possible btn press
-			for _, b := range buttons {
-				clone := make([]int, len(current))
-				copy(clone, current)
-				nq[applyBtnToVoltage(clone, b)] = clone
-			}
+	for pq.Size() > 0 {
+		rec, _ := pq.Dequeue()
+		current := rec.current
+
+		if rec.sum > targetSum {
+			continue
 		}
 
-		q = nq
-	}
+		success := true
+		for i := range current {
+			if current[i] != target[i] {
+				success = false
+				break
+			}
+		}
+		if success {
+			return rec.passes
+		}
 
-	return passes
-}
-
-// used for map key
-func intArrToStr(a []int) string {
-	var b strings.Builder
-	for i, n := range a {
-		b.WriteString(strconv.Itoa(n))
-		if i != len(a)-1 {
-			b.WriteByte(',')
+		// send this one back to the q with each possible btn press
+		for _, b := range buttons {
+			clone := make([]int, len(current))
+			copy(clone, current)
+			applyBtnToVoltage(clone, b)
+			pq.Enqueue(&pqrec{
+				current: clone,
+				passes:  rec.passes + 1,
+				sum:     sum(clone),
+			})
 		}
 	}
-	return b.String()
+
+	return 0
 }
 
-func applyBtnToVoltage(voltage []int, button Button) string {
+type pqrec struct {
+	current     []int
+	passes, sum int
+}
+
+func sum(a []int) int {
+	var n int
+	for _, x := range a {
+		n += x
+	}
+	return n
+}
+
+func applyBtnToVoltage(voltage []int, button Button) {
 	for _, i := range button {
 		voltage[i]++
 	}
-	return intArrToStr(voltage)
 }
