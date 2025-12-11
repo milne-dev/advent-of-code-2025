@@ -65,6 +65,7 @@ ggg: out
 hhh: out`
 	lines := utils.StringLines(input)
 	adj := make([][]uint16, 65535)
+	visited := make([]bool, 65535)
 	for _, line := range lines {
 		fields := strings.Fields(line[5:])
 		k := TripletToInt(line[0:3])
@@ -77,7 +78,7 @@ hhh: out`
 	svr := TripletToInt("svr")
 
 	for b.Loop() {
-		searchP2(adj, adj[svr], false, false)
+		searchP2(adj, adj[svr], false, false, visited)
 	}
 }
 
