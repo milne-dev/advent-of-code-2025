@@ -69,7 +69,8 @@ func searchP2(adj [][]uint16, edges []uint16, dac, fft bool, memo map[rec]int) i
 		}
 
 		if v, ok := memo[rec{edge, dac, fft}]; ok {
-			return v
+			ans += v
+			continue
 		}
 
 		var edgeVal int
