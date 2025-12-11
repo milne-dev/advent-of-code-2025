@@ -9,7 +9,7 @@ import (
 func main() {
 	input := utils.ReadInput()
 	lines := utils.StringLines(input)
-	fmt.Println(PartOne(lines))
+	fmt.Println(PartTwo(lines))
 }
 
 func PartOne(lines []string) int {
@@ -29,4 +29,12 @@ func search(adj map[string][]string, edges []string) int {
 		ans += search(adj, adj[edge])
 	}
 	return ans
+}
+
+func PartTwo(lines []string) int {
+	adj := make(map[string][]string)
+	for _, line := range lines {
+		adj[line[0:3]] = strings.Fields(line[5:])
+	}
+	return 0
 }

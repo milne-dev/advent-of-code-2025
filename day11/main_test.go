@@ -23,3 +23,25 @@ iii: out`
 			want, got)
 	}
 }
+
+func TestPartTwo(t *testing.T) {
+	input := `svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out`
+	want := 2
+	got := PartTwo(utils.StringLines(input))
+	if want != got {
+		t.Errorf(`PartTwo(...) want %v, got %v`,
+			want, got)
+	}
+}
