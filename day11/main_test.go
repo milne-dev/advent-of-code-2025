@@ -47,7 +47,8 @@ hhh: out`
 	}
 }
 
-// string-based BenchmarkPartTwoSearch-8   	 3406622	       350.8 ns/op
+// string-lookup BenchmarkPartTwoSearch-8   	 3406622	       350.8 ns/op
+// uint16-lookup BenchmarkPartTwoSearch-8   	16830844	        69.40 ns/op
 func BenchmarkPartTwoSearch(b *testing.B) {
 	input := `svr: aaa bbb
 aaa: fft
@@ -63,12 +64,25 @@ fff: ggg hhh
 ggg: out
 hhh: out`
 	lines := utils.StringLines(input)
-	adj := make(map[string][]string)
+	adj := make([][]uint16, 65535)
 	for _, line := range lines {
-		adj[line[0:3]] = strings.Fields(line[5:])
+		fields := strings.Fields(line[5:])
+		k := TripletToInt(line[0:3])
+		adj[k] = make([]uint16, len(fields))
+		for i, field := range fields {
+			adj[k][i] = TripletToInt(field)
+		}
 	}
 
+	svr := TripletToInt("svr")
+
 	for b.Loop() {
-		searchP2(adj, adj["svr"], false, false)
+		searchP2(adj, adj[svr], false, false)
+	}
+}
+
+func TestTripletToInt(t *testing.T) {
+	if TripletToInt("AAF") == TripletToInt("FAA") || TripletToInt("AAF") == TripletToInt("AFA") {
+		t.Errorf("bad TestTripletToInt")
 	}
 }

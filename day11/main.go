@@ -32,29 +32,48 @@ func search(adj map[string][]string, edges []string) int {
 }
 
 func PartTwo(lines []string) int {
-	adj := make(map[string][]string)
+	adj := make([][]uint16, 65535)
 	for _, line := range lines {
-		adj[line[0:3]] = strings.Fields(line[5:])
+		fields := strings.Fields(line[5:])
+		k := TripletToInt(line[0:3])
+		adj[k] = make([]uint16, len(fields))
+		for i, field := range fields {
+			adj[k][i] = TripletToInt(field)
+		}
 	}
-	return searchP2(adj, adj["svr"], false, false)
+	return searchP2(adj, adj[TripletToInt("svr")], false, false)
 }
 
-func searchP2(adj map[string][]string, edges []string, dac, fft bool) int {
+var (
+	OUT = TripletToInt("out")
+	DAC = TripletToInt("dac")
+	FFT = TripletToInt("fft")
+)
+
+func searchP2(adj [][]uint16, edges []uint16, dac, fft bool) int {
 	var ans int
 	for _, edge := range edges {
-		if edge == "out" {
+		if edge == OUT {
 			if dac && fft {
 				return 1
 			}
 			return 0
 		}
-		if edge == "dac" {
+		if edge == DAC {
 			ans += searchP2(adj, adj[edge], true, fft)
-		} else if edge == "fft" {
+		} else if edge == FFT {
 			ans += searchP2(adj, adj[edge], dac, true)
 		} else {
 			ans += searchP2(adj, adj[edge], dac, fft)
 		}
 	}
 	return ans
+}
+
+func TripletToInt(s string) uint16 {
+	var n uint16
+	for i := range s {
+		n = n*10 + uint16(s[i]-'A')
+	}
+	return n
 }
