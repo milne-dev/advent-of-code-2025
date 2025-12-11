@@ -2,6 +2,7 @@ package main
 
 import (
 	"aoc2025/utils"
+	"strings"
 	"testing"
 )
 
@@ -46,8 +47,8 @@ hhh: out`
 	}
 }
 
-// 392da3a52e394743d2a441b9969c208cf337d239	BenchmarkPartTwo-8   	 1300795	       908.2 ns/op
-func BenchmarkPartTwo(b *testing.B) {
+// string-based BenchmarkPartTwoSearch-8   	 3406622	       350.8 ns/op
+func BenchmarkPartTwoSearch(b *testing.B) {
 	input := `svr: aaa bbb
 aaa: fft
 fft: ccc
@@ -62,7 +63,12 @@ fff: ggg hhh
 ggg: out
 hhh: out`
 	lines := utils.StringLines(input)
+	adj := make(map[string][]string)
+	for _, line := range lines {
+		adj[line[0:3]] = strings.Fields(line[5:])
+	}
+
 	for b.Loop() {
-		PartTwo(lines)
+		searchP2(adj, adj["svr"], false, false)
 	}
 }
