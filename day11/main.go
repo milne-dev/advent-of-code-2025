@@ -31,9 +31,10 @@ func search(adj map[string][]string, edges []string) int {
 	return ans
 }
 
+const adjSize = 17576 // "ZZZ" + 1
+
 func PartTwo(lines []string) int {
-	adj := make([][]uint16, 65535)
-	visited := make([]bool, 65535)
+	adj := make([][]uint16, adjSize)
 	for _, line := range lines {
 		fields := strings.Fields(line[5:])
 		k := TripletToInt(line[0:3])
@@ -42,7 +43,7 @@ func PartTwo(lines []string) int {
 			adj[k][i] = TripletToInt(field)
 		}
 	}
-	return searchP2(adj, adj[TripletToInt("svr")], false, false, visited)
+	return searchP2(adj, adj[TripletToInt("svr")], false, false)
 }
 
 var (
@@ -51,7 +52,7 @@ var (
 	FFT = TripletToInt("fft")
 )
 
-func searchP2(adj [][]uint16, edges []uint16, dac, fft bool, visited []bool) int {
+func searchP2(adj [][]uint16, edges []uint16, dac, fft bool) int {
 	var ans int
 	for _, edge := range edges {
 		if edge == OUT {
@@ -61,20 +62,13 @@ func searchP2(adj [][]uint16, edges []uint16, dac, fft bool, visited []bool) int
 			return 0
 		}
 
-		if visited[edge] {
-			continue
-		}
-		visited[edge] = true
-
 		if edge == DAC {
-			ans += searchP2(adj, adj[edge], true, fft, visited)
+			ans += searchP2(adj, adj[edge], true, fft)
 		} else if edge == FFT {
-			ans += searchP2(adj, adj[edge], dac, true, visited)
+			ans += searchP2(adj, adj[edge], dac, true)
 		} else {
-			ans += searchP2(adj, adj[edge], dac, fft, visited)
+			ans += searchP2(adj, adj[edge], dac, fft)
 		}
-
-		visited[edge] = false
 	}
 	return ans
 }
@@ -82,7 +76,7 @@ func searchP2(adj [][]uint16, edges []uint16, dac, fft bool, visited []bool) int
 func TripletToInt(s string) uint16 {
 	var n uint16
 	for i := range s {
-		n = n*10 + uint16(s[i]-'A')
+		n = n*26 + uint16(s[i]-'a')
 	}
 	return n
 }

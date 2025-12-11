@@ -64,8 +64,7 @@ fff: ggg hhh
 ggg: out
 hhh: out`
 	lines := utils.StringLines(input)
-	adj := make([][]uint16, 65535)
-	visited := make([]bool, 65535)
+	adj := make([][]uint16, adjSize)
 	for _, line := range lines {
 		fields := strings.Fields(line[5:])
 		k := TripletToInt(line[0:3])
@@ -78,12 +77,15 @@ hhh: out`
 	svr := TripletToInt("svr")
 
 	for b.Loop() {
-		searchP2(adj, adj[svr], false, false, visited)
+		searchP2(adj, adj[svr], false, false)
 	}
 }
 
 func TestTripletToInt(t *testing.T) {
 	if TripletToInt("AAF") == TripletToInt("FAA") || TripletToInt("AAF") == TripletToInt("AFA") {
 		t.Errorf("bad TestTripletToInt")
+	}
+	if TripletToInt("BAA") == TripletToInt("AKA") {
+		t.Errorf("I thought something was off")
 	}
 }
