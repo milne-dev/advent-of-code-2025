@@ -49,6 +49,7 @@ hhh: out`
 
 // string-lookup BenchmarkPartTwoSearch-8   	 3406622	       350.8 ns/op
 // uint16-lookup BenchmarkPartTwoSearch-8   	16830844	        69.40 ns/op
+// uint16-lookup + memo BenchmarkPartTwoSearch-8   	202643169	         5.889 ns/op
 func BenchmarkPartTwoSearch(b *testing.B) {
 	input := `svr: aaa bbb
 aaa: fft
@@ -75,9 +76,10 @@ hhh: out`
 	}
 
 	svr := TripletToInt("svr")
+	memo := make(map[rec]int)
 
 	for b.Loop() {
-		searchP2(adj, adj[svr], false, false)
+		searchP2(adj, adj[svr], false, false, memo)
 	}
 }
 

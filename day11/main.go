@@ -33,6 +33,11 @@ func search(adj map[string][]string, edges []string) int {
 
 const adjSize = 17576 // "ZZZ" + 1
 
+type rec struct {
+	edge     uint16
+	dac, fft bool
+}
+
 func PartTwo(lines []string) int {
 	adj := make([][]uint16, adjSize)
 	for _, line := range lines {
@@ -43,7 +48,8 @@ func PartTwo(lines []string) int {
 			adj[k][i] = TripletToInt(field)
 		}
 	}
-	return searchP2(adj, adj[TripletToInt("svr")], false, false)
+	memo := make(map[rec]int)
+	return searchP2(adj, adj[TripletToInt("svr")], false, false, memo)
 }
 
 var (
@@ -52,7 +58,7 @@ var (
 	FFT = TripletToInt("fft")
 )
 
-func searchP2(adj [][]uint16, edges []uint16, dac, fft bool) int {
+func searchP2(adj [][]uint16, edges []uint16, dac, fft bool, memo map[rec]int) int {
 	var ans int
 	for _, edge := range edges {
 		if edge == OUT {
@@ -62,13 +68,21 @@ func searchP2(adj [][]uint16, edges []uint16, dac, fft bool) int {
 			return 0
 		}
 
-		if edge == DAC {
-			ans += searchP2(adj, adj[edge], true, fft)
-		} else if edge == FFT {
-			ans += searchP2(adj, adj[edge], dac, true)
-		} else {
-			ans += searchP2(adj, adj[edge], dac, fft)
+		if v, ok := memo[rec{edge, dac, fft}]; ok {
+			return v
 		}
+
+		var edgeVal int
+		if edge == DAC {
+			edgeVal = searchP2(adj, adj[edge], true, fft, memo)
+		} else if edge == FFT {
+			edgeVal = searchP2(adj, adj[edge], dac, true, memo)
+		} else {
+			edgeVal = searchP2(adj, adj[edge], dac, fft, memo)
+		}
+
+		ans += edgeVal
+		memo[rec{edge, dac, fft}] = edgeVal
 	}
 	return ans
 }
