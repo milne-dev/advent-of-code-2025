@@ -36,5 +36,25 @@ func PartTwo(lines []string) int {
 	for _, line := range lines {
 		adj[line[0:3]] = strings.Fields(line[5:])
 	}
-	return 0
+	return searchP2(adj, adj["svr"], false, false)
+}
+
+func searchP2(adj map[string][]string, edges []string, dac, fft bool) int {
+	var ans int
+	for _, edge := range edges {
+		if edge == "out" {
+			if dac && fft {
+				return 1
+			}
+			return 0
+		}
+		if edge == "dac" {
+			ans += searchP2(adj, adj[edge], true, fft)
+		} else if edge == "fft" {
+			ans += searchP2(adj, adj[edge], dac, true)
+		} else {
+			ans += searchP2(adj, adj[edge], dac, fft)
+		}
+	}
+	return ans
 }
