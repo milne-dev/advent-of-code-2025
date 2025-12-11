@@ -45,3 +45,24 @@ hhh: out`
 			want, got)
 	}
 }
+
+// 392da3a52e394743d2a441b9969c208cf337d239	BenchmarkPartTwo-8   	 1300795	       908.2 ns/op
+func BenchmarkPartTwo(b *testing.B) {
+	input := `svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out`
+	lines := utils.StringLines(input)
+	for b.Loop() {
+		PartTwo(lines)
+	}
+}
