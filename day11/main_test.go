@@ -91,3 +91,12 @@ func TestTripletToInt(t *testing.T) {
 		t.Errorf("I thought something was off")
 	}
 }
+
+// BenchmarkPartTwo-8   	    8936	    132775 ns/op
+func BenchmarkPartTwo(b *testing.B) {
+	input := utils.ReadInput()
+	lines := utils.StringLines(input)
+	for b.Loop() {
+		PartTwo(lines)
+	}
+}
