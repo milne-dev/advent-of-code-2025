@@ -31,7 +31,7 @@ func search(adj map[string][]string, edges []string) int {
 	return ans
 }
 
-const adjSize = 17576 // "ZZZ" + 1
+const adjSize = 17576 // "zzz" + 1
 
 type rec struct {
 	edge     uint16
