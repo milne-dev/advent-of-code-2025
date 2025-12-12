@@ -60,14 +60,13 @@ var (
 
 func searchP2(adj [][]uint16, edges []uint16, dac, fft bool, memo map[rec]int) int {
 	var ans int
-	for _, edge := range edges {
-		if edge == OUT {
-			if dac && fft {
-				return 1
-			}
-			return 0
+	if edges[0] == OUT {
+		if dac && fft {
+			return 1
 		}
-
+		return 0
+	}
+	for _, edge := range edges {
 		if v, ok := memo[rec{edge, dac, fft}]; ok {
 			ans += v
 			continue
